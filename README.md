@@ -1,4 +1,4 @@
-# NetMirror (Ad-Free, redesigned & Secure)
+# NetMirror (Ad-Free, Redesigned & Secure)
 
 <p align="center">
   <img src="art/icon.png" width="128" height="128" alt="NetMirror Logo" />
@@ -6,36 +6,47 @@
 
 <p align="center">
   <b>A modernized, privacy-hardened, and performance-tuned build of NetMirror.</b><br />
-  Automated startup verification bypass, client-side SPA bottom tab routing, and hardware-accelerated 60 FPS / 900ms motion physics.
+  Automated startup verification bypass, dedicated native Settings UI, 120Hz VRR refresh rate engine, in-app updates, and hardware-accelerated 60 FPS / 900ms motion physics.
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Platform Android" />
+  <img src="https://img.shields.io/badge/Version-v3.3.0-blue?style=flat-square" alt="Version v3.3.0" />
   <img src="https://img.shields.io/badge/Target_SDK-35-blue?style=flat-square" alt="Target SDK 35" />
   <img src="https://img.shields.io/badge/Ad--Free-Automated-success?style=flat-square" alt="Ad-Free" />
-  <img src="https://img.shields.io/badge/Motion-60FPS_%2F_900ms-red?style=flat-square" alt="60FPS 900ms" />
-  <img src="https://img.shields.io/badge/Build_System-Apktool-orange?style=flat-square" alt="Apktool" />
+  <img src="https://img.shields.io/badge/Display-120Hz_%2F_VRR-purple?style=flat-square" alt="120Hz VRR" />
+  <img src="https://img.shields.io/badge/Tablet-Optimized-indigo?style=flat-square" alt="Tablet Optimized" />
 </p>
 
 ---
 
-## 🚀 Key Improvements & Features
+## 🚀 What's New in v3.3.0
 
-### 1. 🛡️ Seamless Startup Ad Bypass
-* **Background Handshake Engine:** Eliminates the forced "We Need Support" and ad click dialogues without breaking backend catalog retrieval.
-* **Cookie Pre-Seeding:** Injects the active session token (`t_hash_t`) natively into Android's `CookieManager` upon cold start.
-* **Auto-Healing Poller:** In the event of session expiry, a background worker silently verifies the downstream session and reloads automatically behind a branded cinematic loader.
+### 1. ⚙️ Dedicated Full-Screen Settings Suite
+* **Modernized 1080p Control:** Removed the intrusive legacy floating dialog; integrated a sleek, smooth animated switch toggle with live backend cookie synchronization (`/mobile/setting.php`).
+* **App Info Sub-Screen:** Detailed system and mod specifications (Version 3.3.0, Target SDK 35, Universal ABIs, sandbox audits).
+* **Live In-App Updates:** Integrated directly with the [GitHub Releases API](https://api.github.com/repos/smartworldarafath/Netmirror/releases/latest) to fetch changelogs and download new APK updates from within the application.
+* **Advanced Refresh Rate Engine:** User-selectable display modes:
+  * **60Hz (Standard - Battery Saver)**
+  * **90Hz (Balanced)**
+  * **120Hz (Ultra Smooth 120 FPS)**
+  * **Dynamic / Variable (VRR):** Touch boost to maximum refresh rate while scrolling, dropping to 60Hz when idle.
+  * *Capability Check:* Displays friendly notification if the device's hardware does not physically support 120Hz.
 
-### 2. ⚡ 60 FPS 900ms Physics-Based Motion Engine
-* **SPA Bottom Navigation:** Intercepts bottom navigation tabs (`Home`, `Series`, `Movies`, `Settings`) to prevent jarring browser unloads, transitioning views with a `cubic-bezier(0.16, 1, 0.3, 1)` easing curve.
-* **Poster Card Elevation:** GPU-accelerated scaling (`translateZ(0)`) and spring touch feedback (`scale(0.94)`) across all carousel posters and movie cards.
-* **Modal Bottom Sheets:** Trailer and metadata dialogs now slide up using smooth 900ms deceleration curves with high-fidelity backdrop blurs.
-* **Native Window Transitions:** Custom transition resources (`nm_slide_in_right_900`, `nm_fade_in_900`, etc.) applied directly to activity lifecycle themes.
+### 2. 📱 Android Native Back Gesture Handling
+* Seamless routing across all views:
+  * Closes video player if playing (`.btn-payer-back`).
+  * Dismisses details/trailer modals (`.btn-close2`).
+  * Collapses search overlay if active.
+  * Navigates back from Settings sub-pages to Settings main, and from Settings main to Home.
+  * Handles standard web view history before prompting application exit.
 
-### 3. 🔒 Complete Privacy & Security Hardening
-* **Zero Screen Recording / Media Projection:** Confirmed 0 references to `MediaProjection`, remote display sharing, or screen capture APIs.
-* **No Unnecessary Permissions:** Stripped of intrusive tracking mechanisms; no microphone (`RECORD_AUDIO`), camera, contacts, SMS, or coarse/fine location requests.
-* **Clean Network Boundary:** Strictly communicates with the media CDN and portal endpoints with intact integrity headers (`X-Requested-With` and custom user agent strings).
+### 3. 🖥️ Tablet & Large Screen Optimization
+* Full support for Android tablets, foldables, and multi-window environments via `<supports-screens>` manifest declarations and adaptive CSS breakpoints (`min-width: 600px` / `min-width: 900px`).
+
+### 4. 🛡️ Startup Ad Bypass & Zero Tracker Policy
+* Automated invisible handshake with CDN gateway; zero forced browser redirections.
+* 100% clean security audit: 0 media projection, 0 background audio recording, 0 location tracking.
 
 ---
 
@@ -43,24 +54,21 @@
 
 ```
 NetMirror/
-├── AndroidManifest.xml          # Cleaned manifest (SDK 35, minimum necessary permissions)
-├── apktool.yml                  # Apktool build configuration and compression specs
+├── AndroidManifest.xml          # Cleaned manifest (SDK 35, tablet support, minimum permissions)
+├── apktool.yml                  # Apktool v3.3.0 build configuration (versionCode: 330)
 ├── art/
 │   └── icon.png                 # High-resolution application launcher logo
 ├── assets/
-│   ├── enhancer.js              # Native JavaScript UI & 60fps motion injection engine
+│   ├── enhancer.js              # Native JavaScript UI, Settings, 120Hz & SPA routing engine
 │   └── index.android.bundle     # React Native runtime bundle
 ├── res/
-│   ├── anim/
-│   │   ├── nm_fade_in_900.xml   # 900ms smooth fade enter animation
-│   │   ├── nm_fade_out_900.xml  # 900ms smooth fade exit animation
-│   │   ├── nm_slide_in_right_900.xml
-│   │   └── nm_slide_out_left_900.xml
+│   ├── anim/                    # 900ms smooth cubic-bezier window animations
 │   └── values/styles.xml        # Theme definitions linked to NetMirrorWindowAnimation
 └── smali/
-    ├── app/netmirror/nmv2/MainActivity.smali           # Pre-seeds CookieManager on cold start
+    ├── app/netmirror/nmv2/MainActivity.smali           # Pre-seeds CookieManager & applies display Hz
     └── com/reactnativecommunity/webview/
-        ├── UIEnhancer.smali                            # Safe asset loader & JS injection bridge
+        ├── NetMirrorBridge.smali                       # Native JavaScriptInterface for 120Hz & updates
+        ├── UIEnhancer.smali                            # Asset loader & VRR touch-boost engine
         └── i.smali                                     # WebViewClient lifecycle integration
 ```
 
@@ -68,30 +76,17 @@ NetMirror/
 
 ## 🛠️ How to Build from Source
 
-This repository contains the complete, buildable decompiled source. You can compile, sign, and install it with standard Android tools.
-
-### Prerequisites
-* **Java Development Kit (JDK 17+)**
-* **Apktool (v2.9.0+)**
-* **Android SDK Build-Tools (for `zipalign` and `apksigner`)**
-
-### 1. Build the APK
 ```bash
+# 1. Build APK
 apktool b . -o NetMirror_unaligned.apk
-```
 
-### 2. Align the APK (4-byte boundary)
-```bash
+# 2. Zipalign (4-byte alignment)
 zipalign -v -p 4 NetMirror_unaligned.apk NetMirror_aligned.apk
-```
 
-### 3. Sign the APK
-```bash
+# 3. Sign with Android debug keystore
 apksigner sign --ks ~/.android/debug.keystore --ks-pass pass:android --key-pass pass:android --out NetMirror_signed.apk NetMirror_aligned.apk
-```
 
-### 4. Install via ADB
-```bash
+# 4. Install via ADB
 adb install -r NetMirror_signed.apk
 ```
 

@@ -3,12 +3,12 @@
 .source "UIEnhancer.java"
 
 # interfaces
-.implements Ljava/lang/Runnable;
+.implements Landroid/view/View$OnTouchListener;
 
 
 # annotations
 .annotation system Ldalvik/annotation/EnclosingMethod;
-    value = Lcom/reactnativecommunity/webview/UIEnhancer;->inject(Landroid/webkit/WebView;Ljava/lang/String;)V
+    value = Lcom/reactnativecommunity/webview/UIEnhancer;->setupVrr(Landroid/app/Activity;Landroid/webkit/WebView;)V
 .end annotation
 
 .annotation system Ldalvik/annotation/InnerClass;
@@ -18,13 +18,11 @@
 
 
 # instance fields
-.field final synthetic val$script:Ljava/lang/String;
-
-.field final synthetic val$webView:Landroid/webkit/WebView;
+.field final synthetic val$activity:Landroid/app/Activity;
 
 
 # direct methods
-.method constructor <init>(Landroid/webkit/WebView;Ljava/lang/String;)V
+.method constructor <init>(Landroid/app/Activity;)V
     .locals 0
     .annotation system Ldalvik/annotation/Signature;
         value = {
@@ -32,10 +30,8 @@
         }
     .end annotation
 
-    .line 47
-    iput-object p1, p0, Lcom/reactnativecommunity/webview/UIEnhancer$1;->val$webView:Landroid/webkit/WebView;
-
-    iput-object p2, p0, Lcom/reactnativecommunity/webview/UIEnhancer$1;->val$script:Ljava/lang/String;
+    .line 82
+    iput-object p1, p0, Lcom/reactnativecommunity/webview/UIEnhancer$1;->val$activity:Landroid/app/Activity;
 
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V
 
@@ -44,29 +40,45 @@
 
 
 # virtual methods
-.method public run()V
-    .locals 3
+.method public onTouch(Landroid/view/View;Landroid/view/MotionEvent;)Z
+    .locals 0
 
-    .line 51
+    .line 86
     :try_start_0
-    iget-object v0, p0, Lcom/reactnativecommunity/webview/UIEnhancer$1;->val$webView:Landroid/webkit/WebView;
+    invoke-virtual {p2}, Landroid/view/MotionEvent;->getAction()I
 
-    iget-object v1, p0, Lcom/reactnativecommunity/webview/UIEnhancer$1;->val$script:Ljava/lang/String;
+    move-result p1
 
-    const/4 v2, 0x0
+    if-eqz p1, :cond_0
 
-    invoke-virtual {v0, v1, v2}, Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V
+    invoke-virtual {p2}, Landroid/view/MotionEvent;->getAction()I
+
+    move-result p1
+
+    const/4 p2, 0x2
+
+    if-ne p1, p2, :cond_1
+
+    .line 87
+    :cond_0
+    iget-object p1, p0, Lcom/reactnativecommunity/webview/UIEnhancer$1;->val$activity:Landroid/app/Activity;
+
+    invoke-static {p1}, Lcom/reactnativecommunity/webview/UIEnhancer;->-$$Nest$smboostToMax(Landroid/app/Activity;)V
     :try_end_0
     .catchall {:try_start_0 .. :try_end_0} :catchall_0
 
-    .line 53
     goto :goto_0
 
-    .line 52
+    .line 89
     :catchall_0
-    move-exception v0
+    move-exception p1
 
-    .line 54
+    :cond_1
     :goto_0
-    return-void
+    nop
+
+    .line 90
+    const/4 p1, 0x0
+
+    return p1
 .end method

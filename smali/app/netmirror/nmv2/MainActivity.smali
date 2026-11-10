@@ -26,6 +26,8 @@
 
     invoke-static {}, Lcom/reactnativecommunity/webview/UIEnhancer;->initCookies()V
 
+    invoke-static {p0}, Lcom/reactnativecommunity/webview/UIEnhancer;->applyInitialRefreshRate(Landroid/app/Activity;)V
+
     .line 2
     .line 3
     .line 4
