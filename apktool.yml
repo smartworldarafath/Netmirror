@@ -1,0 +1,20 @@
+version: 3.0.3
+apkFileName: NetMirror.apk
+usesFramework:
+  ids:
+  - 1
+sdkInfo:
+  minSdkVersion: 24
+  targetSdkVersion: 35
+versionInfo:
+  versionCode: 1
+  versionName: 3.1
+resourcesInfo:
+  packageId: 127
+doNotCompress:
+- arsc
+- png
+- so
+- assets/dexopt/baseline.prof
+- assets/dexopt/baseline.profm
+- assets/index.android.bundle
