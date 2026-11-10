@@ -1,4 +1,4 @@
-# NetMirror (Ad-Free & 60 FPS Fluid Motion)
+# NetMirror (Ad-Free & Secure)
 
 <p align="center">
   <img src="art/icon.png" width="128" height="128" alt="NetMirror Logo" />
