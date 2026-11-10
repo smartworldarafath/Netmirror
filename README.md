@@ -1,4 +1,4 @@
-# NetMirror (Ad-Free & Secure)
+# NetMirror (Ad-Free, redesigned & Secure)
 
 <p align="center">
   <img src="art/icon.png" width="128" height="128" alt="NetMirror Logo" />
