@@ -11,7 +11,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Platform Android" />
-  <img src="https://img.shields.io/badge/Version-v3.4.0-blue?style=flat-square" alt="Version v3.4.0" />
+  <img src="https://img.shields.io/badge/Version-v3.4.1-blue?style=flat-square" alt="Version v3.4.1" />
   <img src="https://img.shields.io/badge/Target_SDK-35-blue?style=flat-square" alt="Target SDK 35" />
   <img src="https://img.shields.io/badge/Ad--Free-Automated-success?style=flat-square" alt="Ad-Free" />
   <img src="https://img.shields.io/badge/Display-120Hz_%2F_VRR-purple?style=flat-square" alt="120Hz VRR" />
@@ -20,19 +20,17 @@
 
 ---
 
-## 🚀 What's New in v3.4.0
+## 🚀 What's New in v3.4.1 (Critical Hotfix)
 
-### 1. 🎬 Fixed Video Player Overlap Bug
-* **Clean Playback Viewport:** Fixed critical layout regression where the bottom navigation bar (`Home`, `Series`, `Movie`, `Setting`, `N`) overlapped on top of video playback controls and pre-roll content.
-* **Intelligent Nav Synchronization:** Re-architected z-index hierarchy (`#player` elevated to `99999`, bottom bar lowered to `5`). Added active DOM MutationObservers and click interceptors that smoothly suppress and hide the bottom bar whenever any movie/series is playing, restoring it cleanly when returning to Home.
-* **Enhanced Pre-Roll Gesture:** Android back gesture now dismisses video playback even during initial pre-roll sponsor/disclaimer display.
+### 1. ⚡ Resolved App Freeze & Image Loading Regression
+* **Eliminated Event-Loop Starvation:** Removed recursive DOM MutationObserver that caused main-thread lockups and froze the user interface after 1-3 seconds.
+* **Instant LazyLoad Processing:** Completely freed the JavaScript event loop, allowing `lazyload.min.js` to process image trays at maximum speed — zero blank placeholder boxes, all movie and series posters load instantly.
+* **Zero-Overhead Player Stacking:** Retained pure CSS viewport stacking (`#player` z-index `99999`, bottom bar `5`), cleanly hiding the bottom navigation bar during video and pre-roll playback without any JavaScript observation overhead.
 
-### 2. 🎨 Brand-New Edge-to-Edge Glowing Glass App Icon
-* Replaced legacy launcher and package icons with the new vibrant, premium glowing glass "N" design.
-* Generated edge-to-edge assets across all Android mipmap densities (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`):
-  * **Adaptive Icons:** Pixel-perfect safe-zone scaling fitting circular, squircle, and round-rect system masks edge-to-edge.
-  * **Legacy Launchers:** Anti-aliased rounded square (`ic_launcher.png`) and circular (`ic_launcher_round.png`) icons.
-  * **Dark Charcoal Palette:** Synchronized adaptive icon background color (`#ff1c2023`) to match the new artwork.
+### 2. 🎨 Edge-to-Edge Glowing Glass App Icon (v3.4.0)
+* High-resolution glowing glass "N" artwork across all mipmap densities (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`).
+* Edge-to-edge scaling for adaptive circular, squircle, and round-rect launcher masks.
+* Restored standard platform system colors in `colors.xml`.
 
 ---
 
@@ -71,7 +69,7 @@
 ```
 NetMirror/
 ├── AndroidManifest.xml          # Cleaned manifest (SDK 35, tablet support, minimum permissions)
-├── apktool.yml                  # Apktool v3.4.0 build configuration (versionCode: 340)
+├── apktool.yml                  # Apktool v3.4.1 build configuration (versionCode: 341)
 ├── art/
 │   └── icon.png                 # High-resolution application launcher logo
 ├── assets/

@@ -1,27 +1,27 @@
 /**
- * NetMirror Native UI, Settings & Motion Engine v3.4.0
+ * NetMirror Native UI, Settings & Motion Engine v3.4.1 (Hotfix)
  * - Automated Startup Ad Handshake & Seamless Bypass
  * - Full-Screen Dedicated Settings Section
  * - 1080p Toggle with Live Cookie & API Integration
- * - App Info Section (v3.4.0, Target SDK 35, Package Info)
+ * - App Info Section (v3.4.1, Target SDK 35, Package Info)
  * - App Updates Section with Live GitHub Releases API & Direct APK Download
  * - Advanced Section: 60Hz / 90Hz / 120Hz / VRR with Device Capability Check
  * - Comprehensive Android Native Back Gesture Handling
  * - Tablet & Large Screen Responsive Layout Optimization
- * - Seamless Video Player Viewport & Suppression of Bottom Navigation Bar
+ * - Seamless Video Player Viewport (Zero-Overhead CSS Stacking & Pure Click Sync)
  * - 60 FPS 900ms Hardware-Accelerated Physics
  */
 (function () {
   'use strict';
 
-  if (window.__NM_ENHANCED_V340__) return;
-  window.__NM_ENHANCED_V340__ = true;
+  if (window.__NM_ENHANCED_V341__) return;
+  window.__NM_ENHANCED_V341__ = true;
 
   // ==========================================
   // 1. INJECT HIGH-PRIORITY STYLES
   // ==========================================
   const styleEl = document.createElement('style');
-  styleEl.id = 'nm-v340-styles';
+  styleEl.id = 'nm-v341-styles';
   styleEl.textContent = `
     /* 1. Suppress legacy ad elements and legacy floating setting popup */
     .info2, .adboxing, .dark-bg, #ad-banner-test, .appdownload, .app-download,
@@ -478,7 +478,7 @@
           <path d="M26 15V85L74 15V85" stroke="#E50914" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="nm-progress-bar"><div class="nm-progress-fill"></div></div>
-        <div class="nm-loader-text">Loading NetMirror v3.4.0</div>
+        <div class="nm-loader-text">Loading NetMirror v3.4.1</div>
       `;
       document.body.appendChild(loader);
     }
@@ -602,7 +602,7 @@
             <path d="M26 15V85L74 15V85" stroke="#E50914" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <div style="font-size:22px; font-weight:800; color:#fff;">NetMirror</div>
-          <div style="font-size:14px; color:#e50914; font-weight:600; margin-top:4px;">Version 3.4.0 (Build 340)</div>
+          <div style="font-size:14px; color:#e50914; font-weight:600; margin-top:4px;">Version 3.4.1 (Build 341)</div>
         </div>
 
         <div class="nm-section-title">Application Specifications</div>
@@ -970,61 +970,21 @@
   // 6.1. VIDEO PLAYER VIEWPORT & NAV SYNC
   // ==========================================
   function setupPlayerNavSync() {
-    function updateNavVisibility() {
-      const player = document.getElementById('player');
-      const bottomNav = document.querySelector('.bottom-navigation-container');
-      if (!bottomNav) return;
-
-      const isPlaying = (player && !player.classList.contains('hide')) ||
-                        document.body.classList.contains('overflow3') ||
-                        document.body.classList.contains('nm-player-active') ||
-                        (window.$ && $('#jw').hasClass('jwplayer'));
-
-      if (isPlaying) {
-        document.body.classList.add('nm-player-active');
-        bottomNav.style.setProperty('display', 'none', 'important');
-        bottomNav.style.setProperty('visibility', 'hidden', 'important');
-        bottomNav.style.setProperty('opacity', '0', 'important');
-        bottomNav.style.setProperty('pointer-events', 'none', 'important');
-        bottomNav.style.setProperty('transform', 'translateY(150%)', 'important');
-      } else {
-        document.body.classList.remove('nm-player-active');
-        bottomNav.style.removeProperty('display');
-        bottomNav.style.removeProperty('visibility');
-        bottomNav.style.removeProperty('opacity');
-        bottomNav.style.removeProperty('pointer-events');
-        bottomNav.style.removeProperty('transform');
-      }
-    }
-
-    // 1. Observe mutations on body and player
-    try {
-      const observer = new MutationObserver(updateNavVisibility);
-      observer.observe(document.body, {
-        attributes: true,
-        subtree: true,
-        attributeFilter: ['class', 'style']
-      });
-    } catch (e) {}
-
-    // 2. Intercept click on play buttons & player back buttons
+    // Intercept click on play buttons & player back buttons (zero DOM observation overhead)
     document.addEventListener('click', function (e) {
       if (e.target.closest('.model-btn-play2, .btn-play2, .playerstart')) {
-        document.body.classList.add('nm-player-active');
-        updateNavVisibility();
-        setTimeout(updateNavVisibility, 50);
-        setTimeout(updateNavVisibility, 200);
-        setTimeout(updateNavVisibility, 500);
+        const bottomNav = document.querySelector('.bottom-navigation-container');
+        if (bottomNav) {
+          bottomNav.style.setProperty('display', 'none', 'important');
+        }
       }
       if (e.target.closest('.btn-payer-back')) {
-        document.body.classList.remove('nm-player-active');
-        setTimeout(updateNavVisibility, 50);
-        setTimeout(updateNavVisibility, 200);
+        const bottomNav = document.querySelector('.bottom-navigation-container');
+        if (bottomNav) {
+          bottomNav.style.removeProperty('display');
+        }
       }
     }, true);
-
-    // Initial check
-    updateNavVisibility();
   }
 
   // ==========================================
@@ -1045,6 +1005,10 @@
         if (typeof window.jwplayer === 'function') {
           try { window.jwplayer().stop().remove(); } catch (err) {}
         }
+      }
+      const bottomNav = document.querySelector('.bottom-navigation-container');
+      if (bottomNav) {
+        bottomNav.style.removeProperty('display');
       }
       return true;
     }
