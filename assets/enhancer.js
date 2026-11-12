@@ -1,26 +1,27 @@
 /**
- * NetMirror Native UI, Settings & Motion Engine v3.3.0
+ * NetMirror Native UI, Settings & Motion Engine v3.4.0
  * - Automated Startup Ad Handshake & Seamless Bypass
  * - Full-Screen Dedicated Settings Section
  * - 1080p Toggle with Live Cookie & API Integration
- * - App Info Section (v3.3.0, Target SDK 35, Package Info)
+ * - App Info Section (v3.4.0, Target SDK 35, Package Info)
  * - App Updates Section with Live GitHub Releases API & Direct APK Download
  * - Advanced Section: 60Hz / 90Hz / 120Hz / VRR with Device Capability Check
  * - Comprehensive Android Native Back Gesture Handling
  * - Tablet & Large Screen Responsive Layout Optimization
+ * - Seamless Video Player Viewport & Suppression of Bottom Navigation Bar
  * - 60 FPS 900ms Hardware-Accelerated Physics
  */
 (function () {
   'use strict';
 
-  if (window.__NM_ENHANCED_V330__) return;
-  window.__NM_ENHANCED_V330__ = true;
+  if (window.__NM_ENHANCED_V340__) return;
+  window.__NM_ENHANCED_V340__ = true;
 
   // ==========================================
   // 1. INJECT HIGH-PRIORITY STYLES
   // ==========================================
   const styleEl = document.createElement('style');
-  styleEl.id = 'nm-v330-styles';
+  styleEl.id = 'nm-v340-styles';
   styleEl.textContent = `
     /* 1. Suppress legacy ad elements and legacy floating setting popup */
     .info2, .adboxing, .dark-bg, #ad-banner-test, .appdownload, .app-download,
@@ -68,8 +69,26 @@
       backdrop-filter: blur(20px) !important;
       -webkit-backdrop-filter: blur(20px) !important;
       border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-      transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1) !important;
-      z-index: 9999 !important;
+      transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms ease !important;
+      z-index: 5 !important;
+    }
+
+    /* 4.1. Video Player Z-Index & Suppression of Bottom Navigation Bar */
+    #player, .player, .player-box, #jw {
+      z-index: 99999 !important;
+    }
+
+    body.overflow3 .bottom-navigation-container,
+    body.nm-player-active .bottom-navigation-container,
+    body:has(#player:not(.hide)) .bottom-navigation-container,
+    body:has(#jw.jwplayer) .bottom-navigation-container,
+    #player:not(.hide) ~ .bottom-navigation-container,
+    .player:not(.hide) ~ .bottom-navigation-container {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateY(150%) !important;
     }
 
     .bottom-navigation-container ul {
@@ -459,7 +478,7 @@
           <path d="M26 15V85L74 15V85" stroke="#E50914" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <div class="nm-progress-bar"><div class="nm-progress-fill"></div></div>
-        <div class="nm-loader-text">Loading NetMirror v3.3.0</div>
+        <div class="nm-loader-text">Loading NetMirror v3.4.0</div>
       `;
       document.body.appendChild(loader);
     }
@@ -583,7 +602,7 @@
             <path d="M26 15V85L74 15V85" stroke="#E50914" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <div style="font-size:22px; font-weight:800; color:#fff;">NetMirror</div>
-          <div style="font-size:14px; color:#e50914; font-weight:600; margin-top:4px;">Version 3.3.0 (Build 330)</div>
+          <div style="font-size:14px; color:#e50914; font-weight:600; margin-top:4px;">Version 3.4.0 (Build 340)</div>
         </div>
 
         <div class="nm-section-title">Application Specifications</div>
@@ -948,12 +967,85 @@
   }
 
   // ==========================================
+  // 6.1. VIDEO PLAYER VIEWPORT & NAV SYNC
+  // ==========================================
+  function setupPlayerNavSync() {
+    function updateNavVisibility() {
+      const player = document.getElementById('player');
+      const bottomNav = document.querySelector('.bottom-navigation-container');
+      if (!bottomNav) return;
+
+      const isPlaying = (player && !player.classList.contains('hide')) ||
+                        document.body.classList.contains('overflow3') ||
+                        document.body.classList.contains('nm-player-active') ||
+                        (window.$ && $('#jw').hasClass('jwplayer'));
+
+      if (isPlaying) {
+        document.body.classList.add('nm-player-active');
+        bottomNav.style.setProperty('display', 'none', 'important');
+        bottomNav.style.setProperty('visibility', 'hidden', 'important');
+        bottomNav.style.setProperty('opacity', '0', 'important');
+        bottomNav.style.setProperty('pointer-events', 'none', 'important');
+        bottomNav.style.setProperty('transform', 'translateY(150%)', 'important');
+      } else {
+        document.body.classList.remove('nm-player-active');
+        bottomNav.style.removeProperty('display');
+        bottomNav.style.removeProperty('visibility');
+        bottomNav.style.removeProperty('opacity');
+        bottomNav.style.removeProperty('pointer-events');
+        bottomNav.style.removeProperty('transform');
+      }
+    }
+
+    // 1. Observe mutations on body and player
+    try {
+      const observer = new MutationObserver(updateNavVisibility);
+      observer.observe(document.body, {
+        attributes: true,
+        subtree: true,
+        attributeFilter: ['class', 'style']
+      });
+    } catch (e) {}
+
+    // 2. Intercept click on play buttons & player back buttons
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('.model-btn-play2, .btn-play2, .playerstart')) {
+        document.body.classList.add('nm-player-active');
+        updateNavVisibility();
+        setTimeout(updateNavVisibility, 50);
+        setTimeout(updateNavVisibility, 200);
+        setTimeout(updateNavVisibility, 500);
+      }
+      if (e.target.closest('.btn-payer-back')) {
+        document.body.classList.remove('nm-player-active');
+        setTimeout(updateNavVisibility, 50);
+        setTimeout(updateNavVisibility, 200);
+      }
+    }, true);
+
+    // Initial check
+    updateNavVisibility();
+  }
+
+  // ==========================================
   // 7. COMPREHENSIVE ANDROID BACK GESTURE
   // ==========================================
   window.pressfromAPP = function () {
-    // 1. Video player open?
-    if (window.$ && $("#jw").hasClass("jwplayer")) {
-      $(".btn-payer-back").click();
+    // 1. Video player open or active?
+    const playerEl = document.getElementById('player');
+    const isPlayerVisible = playerEl && !playerEl.classList.contains('hide');
+    const hasJw = window.$ && $("#jw").hasClass("jwplayer");
+    if (isPlayerVisible || hasJw || (document.body && document.body.classList.contains('overflow3'))) {
+      const backBtn = document.querySelector('.btn-payer-back');
+      if (backBtn) {
+        backBtn.click();
+      } else if (window.$) {
+        $("#player").addClass("hide");
+        $(".body").removeClass("overflow3");
+        if (typeof window.jwplayer === 'function') {
+          try { window.jwplayer().stop().remove(); } catch (err) {}
+        }
+      }
       return true;
     }
     // 2. Movie details / trailer modal open?
@@ -997,6 +1089,7 @@
     checkAndBypassAd();
     createSettingsDOM();
     setupBottomNav();
+    setupPlayerNavSync();
   }
 
   if (document.readyState === 'loading') {

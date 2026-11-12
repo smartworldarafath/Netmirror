@@ -123,7 +123,7 @@
     .end annotation
 
     .line 33
-    const-string v0, "3.3.0"
+    const-string v0, "3.4.0"
 
     return-object v0
 .end method
